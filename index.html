@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Explore U.S. state population changes with a simple interactive chart.">
+    <title>State Population Explorer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!-- I CAN READ THIS -->
+    <header class="hero-banner text-white py-4">
+      <div class="container">
+        <p class="mb-1 fw-semibold">Data USA Population Explorer</p>
+        <h1 class="display-6 mb-2">See How States Grow Over Time</h1>
+        <p class="lead mb-0">Pick states, move the year slider, and compare population changes on the chart.</p>
+      </div>
+    </header>
+
+    <main class="container my-4">
+      <section class="row g-4 align-items-stretch" aria-labelledby="controls-heading">
+        <div class="col-lg-4">
+          <form class="h-100 p-3 p-md-4 bg-light border rounded control-panel" id="population-form">
+            <h2 class="h4 mb-3" id="controls-heading">Choose What To Explore</h2>
+            <p class="text-muted small">Pick a few states, then use the slider to look at one year at a time.</p>
+
+            <div class="mb-4">
+              <label for="state-select" class="form-label fw-semibold">Choose one or more states</label>
+              <select class="form-select" id="state-select" multiple size="8" aria-describedby="state-help">
+              </select>
+              <div class="form-text" id="state-help">
+                Hold Ctrl on Windows or Command on Mac to pick more than one state.
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="d-flex justify-content-between gap-3">
+                <label for="year-slider" class="form-label fw-semibold">Pick a year</label>
+                <output class="badge text-bg-info fs-6" id="year-output" for="year-slider">Loading</output>
+              </div>
+              <input class="form-range" id="year-slider" type="range" min="2013" max="2024" value="2024" step="1" disabled aria-describedby="year-help">
+              <div class="d-flex justify-content-between small text-muted px-1" aria-hidden="true">
+                <span>Earlier</span>
+                <span>Later</span>
+              </div>
+              <div class="form-text" id="year-help">The chart shows years up to the one you choose. The cards below focus on that year.</div>
+            </div>
+
+            <button class="btn btn-success w-100" id="update-button" type="submit">Update Chart</button>
+          </form>
+        </div>
+
+        <div class="col-lg-8">
+          <section class="h-100 p-3 p-md-4 border rounded bg-white chart-section" aria-labelledby="chart-heading">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1" id="chart-heading">Population Over Time</h2>
+                <p class="mb-0 text-muted">Lines compare the states you selected through the year on the slider. Click a legend label or state card to focus on one state.</p>
+              </div>
+              <div class="text-md-end">
+                <span class="badge text-bg-warning text-dark">Source: Data USA</span>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row gap-3 align-items-md-end justify-content-between mb-3">
+              <div>
+                <label class="form-label fw-semibold mb-2" for="scale-mode">Population scale</label>
+                <select class="form-select" id="scale-mode" aria-describedby="scale-help">
+                  <option value="linear">Linear scale</option>
+                  <option value="logarithmic">Log scale</option>
+                </select>
+                <div class="form-text" id="scale-help">Use log scale when a big state makes smaller states look flat.</div>
+              </div>
+              <div class="d-flex gap-2 flex-wrap">
+                <button class="btn btn-outline-primary" id="zoom-in-button" type="button">Zoom In</button>
+                <button class="btn btn-outline-primary" id="zoom-out-button" type="button">Zoom Out</button>
+                <button class="btn btn-outline-secondary" id="reset-zoom-button" type="button">Reset Zoom</button>
+              </div>
+            </div>
+
+            <div class="alert alert-info mb-3" id="status-message" role="status" aria-live="polite">
+              Choose states and press Update Chart.
+            </div>
+
+            <div class="chart-wrap">
+              <canvas id="population-chart" aria-describedby="chart-description"></canvas>
+            </div>
+
+            <p class="visually-hidden" id="chart-description">
+              A line chart compares the population of selected U.S. states over several years.
+            </p>
+
+            <p class="small text-muted mb-0 mt-3" id="chart-summary" aria-live="polite">
+              Choose states to see a chart summary here.
+            </p>
+          </section>
+        </div>
+      </section>
+
+      <section class="my-4" aria-labelledby="summary-heading">
+        <h2 class="h4" id="summary-heading">Year Snapshot</h2>
+        <p class="text-muted">These cards show the population for the year on the slider.</p>
+        <div class="row g-3" id="summary-cards" aria-live="polite">
+          <div class="col-12">
+            <div class="alert alert-secondary mb-0">Pick states to see their populations here.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-top py-3">
+      <div class="container small text-muted">
+        Population data comes from the Data USA API. Numbers are rounded for easy reading.
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.2.0/chartjs-plugin-zoom.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

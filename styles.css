@@ -1,0 +1,113 @@
+body {
+  background:
+    radial-gradient(circle at top left, rgba(255, 214, 102, 0.28), transparent 24%),
+    radial-gradient(circle at top right, rgba(13, 202, 240, 0.20), transparent 28%),
+    linear-gradient(180deg, #fefbf2 0%, #f6fbff 42%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+.hero-banner {
+  background: linear-gradient(135deg, #0d6efd 0%, #19b394 100%);
+}
+
+.control-panel,
+.chart-section {
+  box-shadow: 0 0.5rem 1.25rem rgba(31, 45, 61, 0.08);
+}
+
+.chart-wrap {
+  min-height: 320px;
+  position: relative;
+}
+
+#population-chart {
+  max-height: 420px;
+}
+
+.snapshot-card {
+  border-left: 0.5rem solid var(--state-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.snapshot-card:hover,
+.snapshot-card:focus-within {
+  box-shadow: 0 0.75rem 1.5rem rgba(31, 45, 61, 0.12);
+  transform: translateY(-2px);
+}
+
+.snapshot-card-active {
+  outline: 3px solid rgba(13, 110, 253, 0.45);
+  box-shadow: 0 0.9rem 1.7rem rgba(13, 110, 253, 0.18);
+}
+
+.population-number {
+  font-size: 1.5rem;
+}
+
+#scale-mode {
+  min-width: 13rem;
+}
+
+#year-slider {
+  height: 2rem;
+  background: transparent;
+  opacity: 1;
+}
+
+#year-slider::-webkit-slider-runnable-track {
+  height: 0.75rem;
+  background: linear-gradient(90deg, #f59f00 0%, #0d6efd 100%);
+  border-radius: 999px;
+  border: 1px solid rgba(31, 45, 61, 0.2);
+}
+
+#year-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: -0.42rem;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #1f2d3d;
+  box-shadow: 0 0.125rem 0.5rem rgba(31, 45, 61, 0.25);
+}
+
+#year-slider::-moz-range-track {
+  height: 0.75rem;
+  background: linear-gradient(90deg, #f59f00 0%, #0d6efd 100%);
+  border-radius: 999px;
+  border: 1px solid rgba(31, 45, 61, 0.2);
+}
+
+#year-slider::-moz-range-thumb {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #1f2d3d;
+  box-shadow: 0 0.125rem 0.5rem rgba(31, 45, 61, 0.25);
+}
+
+#year-slider:focus {
+  outline: none;
+}
+
+#year-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+#year-slider:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+@media (max-width: 576px) {
+  .chart-wrap {
+    min-height: 260px;
+  }
+
+  .population-number {
+    font-size: 1.25rem;
+  }
+}
