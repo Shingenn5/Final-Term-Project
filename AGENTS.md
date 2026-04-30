@@ -17,6 +17,7 @@ The app helps elementary school students explore U.S. state population changes o
 - **Make the app responsive on desktop, tablet, and mobile.**
 - **Write complete working code with no placeholders or TODOs.**
 - **Use Hungarian Notation.**
+
 ## Expected Files
 
 - **`index.html`** - semantic page structure and CDN links.
