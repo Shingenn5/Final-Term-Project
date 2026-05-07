@@ -1,8 +1,6 @@
 State Population Explorer
 
-This project was created with help from AI. The AI was used to turn the project requirements into a static frontend app with semantic HTML, Bootstrap styling, accessible controls, Data USA API calls, and Chart.js visualization. It also helped keep the code beginner-friendly by using clear names, comments, and simple functions.
-
-AI was also used to review the project against the assignment document and AGENTS.md. During that review, the app was improved with region quick-pick buttons, an individual state checkbox grid, a year slider, chart size controls, and a chart view control that can show total population, population change, or percent change. The app avoids React, Vue, Angular, TailwindCSS, backend code, build tools, and Node.js. The final version keeps the HTML, CSS, and JavaScript together in index.html so the project is easy to submit and explain.
+Project was created with use of AI through Codex. App was codex in JavaScript, CSS, and HTML. 
 
 Original prompt used:
 You are building a complete frontend web application.
