@@ -352,9 +352,9 @@
                 <select class="form-select kid-select" id="chart-view" aria-describedby="chart-view-help">
                   <option value="population">Total people</option>
                   <option value="change">More or fewer people</option>
-                  <option value="percent">Percent change</option>
+                  <option value="percent" selected>Percent change</option>
                 </select>
-                <div class="form-text" id="chart-view-help">Change the chart to see growth more clearly.</div>
+                <div class="form-text" id="chart-view-help">Percent change makes small patterns easier to see.</div>
               </div>
               <div>
                 <label class="form-label fw-semibold mb-2" for="view-size">Chart size</label>
@@ -514,7 +514,7 @@
       let objSelectedStateData = {};
       let arrAvailableYears = [];
       let blnHasLoadedApiData = false;
-      let strChartView = "population";
+      let strChartView = "percent";
       let strViewSize = "normal";
       let strFocusedStateId = "";
 
@@ -775,8 +775,33 @@
         });
       }
 
-      function fnGetYAxisConfig() {
+      function fnGetVisibleChartValues(numSelectedYear) {
+        const arrVisibleYears = arrAvailableYears.filter((numYear) => numYear <= numSelectedYear);
+        const arrStatesToRender = strFocusedStateId && objSelectedStateData[strFocusedStateId]
+          ? [objSelectedStateData[strFocusedStateId]]
+          : Object.values(objSelectedStateData);
+
+        return arrStatesToRender
+          .flatMap((objState) => arrVisibleYears.map((numYear) => fnGetChartValue(objState, numYear)))
+          .filter((numValue) => Number.isFinite(numValue));
+      }
+
+      function fnGetYAxisConfig(numSelectedYear) {
         let strAxisTitle = "Population";
+        const arrValues = fnGetVisibleChartValues(numSelectedYear);
+        const numLowestValue = arrValues.length > 0 ? Math.min(...arrValues) : null;
+        const numHighestValue = arrValues.length > 0 ? Math.max(...arrValues) : null;
+        const numRange = numLowestValue !== null && numHighestValue !== null
+          ? Math.max(numHighestValue - numLowestValue, Math.abs(numHighestValue) * 0.05, 1)
+          : 1;
+        const numPadding = numRange * 0.15;
+        const blnShowZero = strChartView !== "population";
+        const numAxisMin = numLowestValue !== null
+          ? Math.min(numLowestValue - numPadding, blnShowZero ? 0 : numLowestValue - numPadding)
+          : undefined;
+        const numAxisMax = numHighestValue !== null
+          ? Math.max(numHighestValue + numPadding, blnShowZero ? 0 : numHighestValue + numPadding)
+          : undefined;
 
         if (strChartView === "change") {
           strAxisTitle = "Change since first year";
@@ -791,7 +816,9 @@
             display: true,
             text: strAxisTitle
           },
-          beginAtZero: strChartView !== "change",
+          beginAtZero: false,
+          suggestedMin: numAxisMin,
+          suggestedMax: numAxisMax,
           grace: "8%",
           grid: {
             color: "rgba(36, 52, 71, 0.08)",
@@ -871,7 +898,7 @@
 
         if (chartPopulation) {
           chartPopulation.data = objChartData;
-          chartPopulation.options.scales.y = fnGetYAxisConfig();
+          chartPopulation.options.scales.y = fnGetYAxisConfig(numSelectedYear);
           chartPopulation.options.scales.x.title.text = `Year (through ${numSelectedYear})`;
           chartPopulation.update();
           return;
@@ -961,7 +988,7 @@
                   }
                 }
               },
-              y: fnGetYAxisConfig()
+              y: fnGetYAxisConfig(numSelectedYear)
             }
           }
         });
