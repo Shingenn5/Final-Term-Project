@@ -1,8 +1,8 @@
 State Population Explorer
 
-This project was created with help from AI. The AI was used to turn the project requirements into a complete static frontend app with semantic HTML, Bootstrap styling, accessible controls, Data USA API calls, and Chart.js visualization. It also helped keep the code beginner-friendly by using clear names, comments, and simple functions.
+This project was created with help from AI. The AI was used to turn the project requirements into a static frontend app with semantic HTML, Bootstrap styling, accessible controls, Data USA API calls, and Chart.js visualization. It also helped keep the code beginner-friendly by using clear names, comments, and simple functions.
 
-AI was also used to check that the implementation followed the project rules in AGENTS.md. The app avoids frameworks, TailwindCSS, backend code, build tools, and Node.js. It can be opened directly in a browser by opening index.html.
+AI was also used to review the project against the assignment document and AGENTS.md. During that review, the app was improved with region quick-pick buttons, an individual state checkbox grid, a year slider, chart size controls, and a chart view control that can show total population, population change, or percent change. The app avoids React, Vue, Angular, TailwindCSS, backend code, build tools, and Node.js. The final version keeps the HTML, CSS, and JavaScript together in index.html so the project is easy to submit and explain.
 
 Original prompt used:
 You are building a complete frontend web application.
@@ -91,4 +91,6 @@ OUTPUT RULES
 Now generate the full project.
 
 Features:
-The app lets students choose multiple U.S. states, load population data from the Data USA API, compare the selected states in a Chart.js line chart, and move a year slider to see population cards for a specific year. It includes loading messages, friendly error handling, responsive Bootstrap layout, labels for controls, and a screen-reader chart description.
+The app lets students choose multiple U.S. states with quick region buttons or individual checkboxes, load population data from the Data USA API, compare the selected states in a Chart.js line chart, and move a year slider to see population cards for a specific year. It includes loading messages, friendly error handling, responsive Bootstrap layout, labels for controls, and a screen-reader chart description.
+
+The chart can show total population, population change, or percent change. This helps students see that total population lines may look steady because state populations usually change slowly, while change views make growth easier to notice.

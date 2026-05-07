@@ -6,37 +6,319 @@
     <meta name="description" content="Explore U.S. state population changes with a simple interactive chart.">
     <title>State Population Explorer</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/flatly/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+      body {
+        background: #f5f7fb;
+        color: #243447;
+        min-height: 100vh;
+      }
+
+      .hero-banner {
+        background: linear-gradient(135deg, #234a7c 0%, #157a6e 100%);
+        border-bottom: 5px solid #f9c74f;
+      }
+
+      .hero-label {
+        letter-spacing: 0.04rem;
+        text-transform: uppercase;
+      }
+
+      .info-strip {
+        margin-top: -1.5rem;
+      }
+
+      .info-card {
+        background: #ffffff;
+        border: 1px solid #d7e0ea;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1.25rem rgba(31, 45, 61, 0.08);
+      }
+
+      .control-panel,
+      .chart-section {
+        border-color: #d7e0ea !important;
+        box-shadow: 0 0.5rem 1.25rem rgba(31, 45, 61, 0.08);
+      }
+
+      .control-panel {
+        background: #ffffff !important;
+      }
+
+      .section-kicker {
+        color: #157a6e;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.03rem;
+        text-transform: uppercase;
+      }
+
+      .chart-wrap {
+        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        border: 1px solid #e4ebf2;
+        border-radius: 0.5rem;
+        min-height: 380px;
+        padding: 1rem;
+        position: relative;
+      }
+
+      #population-chart {
+        max-height: 420px;
+      }
+
+      .snapshot-card {
+        border-left: 0.5rem solid #0d6efd;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+      }
+
+      .snapshot-card:hover,
+      .snapshot-card:focus-within {
+        box-shadow: 0 0.75rem 1.5rem rgba(31, 45, 61, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .snapshot-card-active {
+        outline: 3px solid rgba(13, 110, 253, 0.45);
+        box-shadow: 0 0.9rem 1.7rem rgba(13, 110, 253, 0.18);
+      }
+
+      .population-number {
+        font-size: 1.5rem;
+      }
+
+      .source-note {
+        background: #e9f7f1;
+        border: 1px solid #b6e2cf;
+        border-radius: 0.5rem;
+      }
+
+      .chart-small {
+        min-height: 300px;
+      }
+
+      .chart-large {
+        min-height: 500px;
+      }
+
+      .snapshot-card-large .population-number {
+        font-size: 1.85rem;
+      }
+
+      .quick-pick-buttons .btn {
+        min-height: 2.4rem;
+      }
+
+      .quick-pick-buttons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .state-grid {
+        background: #ffffff;
+        border: 1px solid #ced4da;
+        border-radius: 0.5rem;
+        display: grid;
+        gap: 0.35rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: 290px;
+        overflow-y: auto;
+        padding: 0.6rem;
+      }
+
+      .state-choice {
+        align-items: center;
+        border: 1px solid #e5edf5;
+        border-radius: 0.4rem;
+        display: flex;
+        gap: 0.45rem;
+        min-height: 2.35rem;
+        padding: 0.35rem 0.45rem;
+      }
+
+      .state-choice:hover {
+        background: #f1f7ff;
+      }
+
+      .state-choice input {
+        flex-shrink: 0;
+        height: 1.1rem;
+        margin: 0;
+        width: 1.1rem;
+      }
+
+      .state-choice label {
+        cursor: pointer;
+        font-size: 0.95rem;
+        line-height: 1.15;
+      }
+
+      #view-size {
+        min-width: 11rem;
+      }
+
+      .kid-select {
+        font-size: 1rem;
+        min-height: 2.75rem;
+      }
+
+      .step-number {
+        align-items: center;
+        background: #f9c74f;
+        border-radius: 50%;
+        color: #243447;
+        display: inline-flex;
+        font-weight: 700;
+        height: 1.8rem;
+        justify-content: center;
+        margin-right: 0.35rem;
+        width: 1.8rem;
+      }
+
+      #year-slider {
+        height: 2rem;
+        background: transparent;
+        opacity: 1;
+      }
+
+      #year-slider::-webkit-slider-runnable-track {
+        height: 0.75rem;
+        background: linear-gradient(90deg, #f59f00 0%, #0d6efd 100%);
+        border-radius: 999px;
+        border: 1px solid rgba(31, 45, 61, 0.2);
+      }
+
+      #year-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-top: -0.42rem;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid #1f2d3d;
+        box-shadow: 0 0.125rem 0.5rem rgba(31, 45, 61, 0.25);
+      }
+
+      #year-slider::-moz-range-track {
+        height: 0.75rem;
+        background: linear-gradient(90deg, #f59f00 0%, #0d6efd 100%);
+        border-radius: 999px;
+        border: 1px solid rgba(31, 45, 61, 0.2);
+      }
+
+      #year-slider::-moz-range-thumb {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid #1f2d3d;
+        box-shadow: 0 0.125rem 0.5rem rgba(31, 45, 61, 0.25);
+      }
+
+      #year-slider:focus {
+        outline: none;
+      }
+
+      #year-slider:focus::-webkit-slider-thumb {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+      }
+
+      #year-slider:focus::-moz-range-thumb {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+      }
+
+      @media (max-width: 576px) {
+        .chart-wrap {
+          min-height: 320px;
+          padding: 0.5rem;
+        }
+
+        .chart-small {
+          min-height: 280px;
+        }
+
+        .chart-large {
+          min-height: 430px;
+        }
+
+        .state-grid {
+          grid-template-columns: 1fr;
+          max-height: 300px;
+        }
+
+        .population-number {
+          font-size: 1.25rem;
+        }
+
+        .hero-banner {
+          padding-bottom: 2rem !important;
+          padding-top: 2rem !important;
+        }
+      }
+    </style>
   </head>
   <body>
-    <!-- AIDER DESK READ THIS -->
-    <header class="hero-banner text-white py-4">
+    <header class="hero-banner text-white py-5">
       <div class="container">
-        <p class="mb-1 fw-semibold">Data USA Population Explorer</p>
-        <h1 class="display-6 mb-2">See How States Grow Over Time</h1>
-        <p class="lead mb-0">Pick states, move the year slider, and compare population changes on the chart.</p>
+        <p class="hero-label mb-2 fw-semibold">Data USA Population Explorer</p>
+        <h1 class="display-5 mb-3">Explore State Populations</h1>
+        <p class="lead mb-0 col-lg-9">Pick up to three states, choose a year, and see how the population changed.</p>
       </div>
     </header>
 
     <main class="container my-4">
+      <section class="info-strip mb-4" aria-label="Project overview">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="info-card h-100 p-3">
+              <p class="section-kicker mb-1">Step 1</p>
+              <p class="mb-0 fw-semibold">Pick states or a region.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="info-card h-100 p-3">
+              <p class="section-kicker mb-1">Step 2</p>
+              <p class="mb-0 fw-semibold">Slide to choose a year.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="info-card h-100 p-3">
+              <p class="section-kicker mb-1">Step 3</p>
+              <p class="mb-0 fw-semibold">Press the green button.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="row g-4 align-items-stretch" aria-labelledby="controls-heading">
         <div class="col-lg-4">
           <form class="h-100 p-3 p-md-4 bg-light border rounded control-panel" id="population-form">
-            <h2 class="h4 mb-3" id="controls-heading">Choose What To Explore</h2>
-            <p class="text-muted small">Pick a few states, then use the slider to look at one year at a time.</p>
+            <p class="section-kicker mb-1">Explore</p>
+            <h2 class="h4 mb-3" id="controls-heading">Make Your Chart</h2>
+            <p class="text-muted small">Use the quick buttons, then check or uncheck any states you want.</p>
 
-            <div class="mb-4">
-              <label for="state-select" class="form-label fw-semibold">Choose one or more states</label>
-              <select class="form-select" id="state-select" multiple size="8" aria-describedby="state-help">
-              </select>
-              <div class="form-text" id="state-help">
-                Hold Ctrl on Windows or Command on Mac to pick more than one state.
+            <fieldset class="mb-4">
+              <legend class="form-label fw-semibold"><span class="step-number">1</span>Pick states</legend>
+              <div class="quick-pick-buttons d-grid gap-2 mb-3" aria-label="Quick state choices">
+                <button class="btn btn-outline-primary" type="button" data-group="west">West</button>
+                <button class="btn btn-outline-primary" type="button" data-group="midwest">Midwest</button>
+                <button class="btn btn-outline-primary" type="button" data-group="south">South</button>
+                <button class="btn btn-outline-primary" type="button" data-group="northeast">Northeast</button>
+                <button class="btn btn-outline-success" type="button" data-group="all">All States</button>
+                <button class="btn btn-outline-secondary" type="button" data-group="clear">Clear</button>
               </div>
-            </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small text-muted">Selected states</span>
+                <span class="badge text-bg-info" id="state-count">0 selected</span>
+              </div>
+              <div class="state-grid" id="state-grid" aria-describedby="state-help"></div>
+              <div class="form-text" id="state-help">
+                Quick buttons choose many states at once. The boxes let you make changes.
+              </div>
+            </fieldset>
 
             <div class="mb-4">
               <div class="d-flex justify-content-between gap-3">
-                <label for="year-slider" class="form-label fw-semibold">Pick a year</label>
+                <label for="year-slider" class="form-label fw-semibold"><span class="step-number">2</span>Pick a year</label>
                 <output class="badge text-bg-info fs-6" id="year-output" for="year-slider">Loading</output>
               </div>
               <input class="form-range" id="year-slider" type="range" min="2013" max="2024" value="2024" step="1" disabled aria-describedby="year-help">
@@ -44,10 +326,10 @@
                 <span>Earlier</span>
                 <span>Later</span>
               </div>
-              <div class="form-text" id="year-help">The chart shows years up to the one you choose. The cards below focus on that year.</div>
+              <div class="form-text" id="year-help">The chart stops at the year you choose.</div>
             </div>
 
-            <button class="btn btn-success w-100" id="update-button" type="submit">Update Chart</button>
+            <button class="btn btn-success btn-lg w-100" id="update-button" type="submit"><span class="step-number">3</span>Show My Chart</button>
           </form>
         </div>
 
@@ -55,32 +337,38 @@
           <section class="h-100 p-3 p-md-4 border rounded bg-white chart-section" aria-labelledby="chart-heading">
             <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
               <div>
+                <p class="section-kicker mb-1">Chart</p>
                 <h2 class="h4 mb-1" id="chart-heading">Population Over Time</h2>
-                <p class="mb-0 text-muted">Lines compare the states you selected through the year on the slider. Click a legend label or state card to focus on one state.</p>
+                <p class="mb-0 text-muted">Each line is one state. The cards below show the population for your chosen year.</p>
               </div>
               <div class="text-md-end">
                 <span class="badge text-bg-warning text-dark">Source: Data USA</span>
               </div>
             </div>
 
-            <div class="d-flex flex-column flex-md-row gap-3 align-items-md-end justify-content-between mb-3">
+            <div class="d-flex flex-column flex-sm-row gap-3 align-items-sm-end mb-3">
               <div>
-                <label class="form-label fw-semibold mb-2" for="scale-mode">Population scale</label>
-                <select class="form-select" id="scale-mode" aria-describedby="scale-help">
-                  <option value="linear">Linear scale</option>
-                  <option value="logarithmic">Log scale</option>
+                <label class="form-label fw-semibold mb-2" for="chart-view">What to show</label>
+                <select class="form-select kid-select" id="chart-view" aria-describedby="chart-view-help">
+                  <option value="population">Total people</option>
+                  <option value="change">More or fewer people</option>
+                  <option value="percent">Percent change</option>
                 </select>
-                <div class="form-text" id="scale-help">Use log scale when a big state makes smaller states look flat.</div>
+                <div class="form-text" id="chart-view-help">Change the chart to see growth more clearly.</div>
               </div>
-              <div class="d-flex gap-2 flex-wrap">
-                <button class="btn btn-outline-primary" id="zoom-in-button" type="button">Zoom In</button>
-                <button class="btn btn-outline-primary" id="zoom-out-button" type="button">Zoom Out</button>
-                <button class="btn btn-outline-secondary" id="reset-zoom-button" type="button">Reset Zoom</button>
+              <div>
+                <label class="form-label fw-semibold mb-2" for="view-size">Chart size</label>
+                <select class="form-select kid-select" id="view-size" aria-describedby="view-help">
+                  <option value="normal">Normal</option>
+                  <option value="small">Smaller</option>
+                  <option value="large">Larger</option>
+                </select>
+                <div class="form-text" id="view-help">Make the chart easier to see.</div>
               </div>
             </div>
 
             <div class="alert alert-info mb-3" id="status-message" role="status" aria-live="polite">
-              Choose states and press Update Chart.
+              Pick states and press Show My Chart.
             </div>
 
             <div class="chart-wrap">
@@ -99,8 +387,9 @@
       </section>
 
       <section class="my-4" aria-labelledby="summary-heading">
+        <p class="section-kicker mb-1">Snapshot</p>
         <h2 class="h4" id="summary-heading">Year Snapshot</h2>
-        <p class="text-muted">These cards show the population for the year on the slider.</p>
+        <p class="text-muted">These cards show the population for the selected year.</p>
         <div class="row g-3" id="summary-cards" aria-live="polite">
           <div class="col-12">
             <div class="alert alert-secondary mb-0">Pick states to see their populations here.</div>
@@ -110,14 +399,703 @@
     </main>
 
     <footer class="border-top py-3">
-      <div class="container small text-muted">
-        Population data comes from the Data USA API. Numbers are rounded for easy reading.
+      <div class="container small text-muted source-note p-3">
+        Population data comes from the Data USA API. Numbers use standard commas so they are easy to read.
       </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.2.0/chartjs-plugin-zoom.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+      const arrStates = [
+        { strId: "04000US01", strName: "Alabama" },
+        { strId: "04000US02", strName: "Alaska" },
+        { strId: "04000US04", strName: "Arizona" },
+        { strId: "04000US05", strName: "Arkansas" },
+        { strId: "04000US06", strName: "California" },
+        { strId: "04000US08", strName: "Colorado" },
+        { strId: "04000US09", strName: "Connecticut" },
+        { strId: "04000US10", strName: "Delaware" },
+        { strId: "04000US12", strName: "Florida" },
+        { strId: "04000US13", strName: "Georgia" },
+        { strId: "04000US15", strName: "Hawaii" },
+        { strId: "04000US16", strName: "Idaho" },
+        { strId: "04000US17", strName: "Illinois" },
+        { strId: "04000US18", strName: "Indiana" },
+        { strId: "04000US19", strName: "Iowa" },
+        { strId: "04000US20", strName: "Kansas" },
+        { strId: "04000US21", strName: "Kentucky" },
+        { strId: "04000US22", strName: "Louisiana" },
+        { strId: "04000US23", strName: "Maine" },
+        { strId: "04000US24", strName: "Maryland" },
+        { strId: "04000US25", strName: "Massachusetts" },
+        { strId: "04000US26", strName: "Michigan" },
+        { strId: "04000US27", strName: "Minnesota" },
+        { strId: "04000US28", strName: "Mississippi" },
+        { strId: "04000US29", strName: "Missouri" },
+        { strId: "04000US30", strName: "Montana" },
+        { strId: "04000US31", strName: "Nebraska" },
+        { strId: "04000US32", strName: "Nevada" },
+        { strId: "04000US33", strName: "New Hampshire" },
+        { strId: "04000US34", strName: "New Jersey" },
+        { strId: "04000US35", strName: "New Mexico" },
+        { strId: "04000US36", strName: "New York" },
+        { strId: "04000US37", strName: "North Carolina" },
+        { strId: "04000US38", strName: "North Dakota" },
+        { strId: "04000US39", strName: "Ohio" },
+        { strId: "04000US40", strName: "Oklahoma" },
+        { strId: "04000US41", strName: "Oregon" },
+        { strId: "04000US42", strName: "Pennsylvania" },
+        { strId: "04000US44", strName: "Rhode Island" },
+        { strId: "04000US45", strName: "South Carolina" },
+        { strId: "04000US46", strName: "South Dakota" },
+        { strId: "04000US47", strName: "Tennessee" },
+        { strId: "04000US48", strName: "Texas" },
+        { strId: "04000US49", strName: "Utah" },
+        { strId: "04000US50", strName: "Vermont" },
+        { strId: "04000US51", strName: "Virginia" },
+        { strId: "04000US53", strName: "Washington" },
+        { strId: "04000US54", strName: "West Virginia" },
+        { strId: "04000US55", strName: "Wisconsin" },
+        { strId: "04000US56", strName: "Wyoming" }
+      ];
+
+      const objStateGroups = {
+        west: [
+          "04000US02", "04000US04", "04000US06", "04000US08", "04000US15",
+          "04000US16", "04000US30", "04000US32", "04000US35", "04000US41",
+          "04000US49", "04000US53", "04000US56"
+        ],
+        midwest: [
+          "04000US17", "04000US18", "04000US19", "04000US20", "04000US26",
+          "04000US27", "04000US29", "04000US31", "04000US38", "04000US39",
+          "04000US46", "04000US55"
+        ],
+        south: [
+          "04000US01", "04000US05", "04000US10", "04000US12", "04000US13",
+          "04000US21", "04000US22", "04000US24", "04000US28", "04000US37",
+          "04000US40", "04000US45", "04000US47", "04000US48", "04000US51",
+          "04000US54"
+        ],
+        northeast: [
+          "04000US09", "04000US23", "04000US25", "04000US33", "04000US34",
+          "04000US36", "04000US42", "04000US44", "04000US50"
+        ]
+      };
+
+      const arrColors = [
+        "#1f77b4",
+        "#2ca02c",
+        "#d62728",
+        "#ff7f0e",
+        "#9467bd",
+        "#008b8b",
+        "#c2185b",
+        "#6b8e23"
+      ];
+
+      const elPopulationForm = document.querySelector("#population-form");
+      const elStateGrid = document.querySelector("#state-grid");
+      const elStateCount = document.querySelector("#state-count");
+      const elYearSlider = document.querySelector("#year-slider");
+      const elYearOutput = document.querySelector("#year-output");
+      const elUpdateButton = document.querySelector("#update-button");
+      const elStatusMessage = document.querySelector("#status-message");
+      const elSummaryCards = document.querySelector("#summary-cards");
+      const elChartCanvas = document.querySelector("#population-chart");
+      const elChartSummary = document.querySelector("#chart-summary");
+      const elChartDescription = document.querySelector("#chart-description");
+      const elChartView = document.querySelector("#chart-view");
+      const elViewSize = document.querySelector("#view-size");
+      const elChartWrap = document.querySelector(".chart-wrap");
+
+      let chartPopulation = null;
+      let objAllStateData = {};
+      let objSelectedStateData = {};
+      let arrAvailableYears = [];
+      let blnHasLoadedApiData = false;
+      let strChartView = "population";
+      let strViewSize = "normal";
+      let strFocusedStateId = "";
+
+      function fnFillStateGrid() {
+        arrStates.forEach((objState) => {
+          const elChoice = document.createElement("div");
+          const strInputId = `state-${objState.strId}`;
+          const blnIsStartingState = ["04000US06", "04000US48", "04000US36"].includes(objState.strId);
+
+          elChoice.className = "state-choice";
+          elChoice.innerHTML = `
+            <input class="form-check-input state-checkbox" id="${strInputId}" type="checkbox" value="${objState.strId}" ${blnIsStartingState ? "checked" : ""}>
+            <label for="${strInputId}">${objState.strName}</label>
+          `;
+
+          elStateGrid.appendChild(elChoice);
+        });
+
+        fnUpdateStateCount();
+      }
+
+      function fnGetSelectedStates() {
+        const arrCheckedBoxes = Array.from(document.querySelectorAll(".state-checkbox:checked"));
+
+        return arrCheckedBoxes.map((elCheckbox) => {
+          return arrStates.find((objState) => objState.strId === elCheckbox.value);
+        }).filter(Boolean);
+      }
+
+      function fnUpdateStateCount() {
+        const numSelectedStates = fnGetSelectedStates().length;
+        elStateCount.textContent = `${numSelectedStates} selected`;
+      }
+
+      function fnSetCheckedStates(arrStateIds) {
+        document.querySelectorAll(".state-checkbox").forEach((elCheckbox) => {
+          elCheckbox.checked = arrStateIds.includes(elCheckbox.value);
+        });
+
+        fnUpdateStateCount();
+      }
+
+      function fnHandleQuickPick(strGroupName) {
+        if (strGroupName === "clear") {
+          fnSetCheckedStates([]);
+          return;
+        }
+
+        if (strGroupName === "all") {
+          fnSetCheckedStates(arrStates.map((objState) => objState.strId));
+          return;
+        }
+
+        fnSetCheckedStates(objStateGroups[strGroupName] || []);
+      }
+
+      function fnSetStatus(strMessage, strType) {
+        elStatusMessage.className = `alert alert-${strType} mb-3`;
+        elStatusMessage.textContent = strMessage;
+      }
+
+      function fnFormatPopulation(numPopulation) {
+        return new Intl.NumberFormat("en-US").format(numPopulation);
+      }
+
+      // Use short labels on the chart axis so large population numbers do not crowd the chart.
+      function fnFormatPopulationShort(numPopulation) {
+        if (Math.abs(numPopulation) >= 1000000) {
+          return `${(numPopulation / 1000000).toFixed(1).replace(".0", "")}M`;
+        }
+
+        if (Math.abs(numPopulation) >= 1000) {
+          return `${Math.round(numPopulation / 1000)}K`;
+        }
+
+        return String(numPopulation);
+      }
+
+      function fnFindPopulationForYear(arrRows, numYear) {
+        const objRow = arrRows.find((objItem) => Number(objItem.Year) === numYear);
+        return objRow ? Number(objRow.Population) : null;
+      }
+
+      function fnFindFirstPopulation(arrRows) {
+        return arrRows.length > 0 ? Number(arrRows[0].Population) : null;
+      }
+
+      function fnGetChartValue(objState, numYear) {
+        const numPopulation = fnFindPopulationForYear(objState.arrRows, numYear);
+        const numFirstPopulation = fnFindFirstPopulation(objState.arrRows);
+
+        if (numPopulation === null || numFirstPopulation === null) {
+          return null;
+        }
+
+        if (strChartView === "change") {
+          return numPopulation - numFirstPopulation;
+        }
+
+        if (strChartView === "percent") {
+          return ((numPopulation - numFirstPopulation) / numFirstPopulation) * 100;
+        }
+
+        return numPopulation;
+      }
+
+      function fnFormatChartValue(numValue) {
+        if (numValue === null) {
+          return "No data";
+        }
+
+        if (strChartView === "percent") {
+          return `${numValue.toFixed(1)}%`;
+        }
+
+        if (strChartView === "change") {
+          return `${numValue >= 0 ? "+" : ""}${fnFormatPopulation(Math.round(numValue))} people`;
+        }
+
+        return `${fnFormatPopulation(numValue)} people`;
+      }
+
+      function fnClearChart() {
+        if (chartPopulation) {
+          chartPopulation.destroy();
+          chartPopulation = null;
+        }
+      }
+
+      function fnBuildStateMap(arrRows) {
+        const objAllowedStates = Object.fromEntries(
+          arrStates.map((objState) => [objState.strId, objState.strName])
+        );
+        const objGroupedData = {};
+
+        arrRows.forEach((objRow) => {
+          const strStateId = objRow["State ID"];
+
+          if (!objAllowedStates[strStateId]) {
+            return;
+          }
+
+          if (!objGroupedData[strStateId]) {
+            objGroupedData[strStateId] = {
+              strId: strStateId,
+              strName: objAllowedStates[strStateId],
+              arrRows: []
+            };
+          }
+
+          objGroupedData[strStateId].arrRows.push({
+            Year: Number(objRow.Year),
+            Population: Number(objRow.Population)
+          });
+        });
+
+        Object.values(objGroupedData).forEach((objState) => {
+          objState.arrRows = objState.arrRows
+            .filter((objRow) => Number.isFinite(objRow.Year) && Number.isFinite(objRow.Population))
+            .sort((objA, objB) => objA.Year - objB.Year);
+        });
+
+        return objGroupedData;
+      }
+
+      // Fetch all state population history from the current Data USA API.
+      async function fnFetchPopulationData() {
+        const strApiUrl = "https://api.datausa.io/tesseract/data.jsonrecords?cube=acs_yg_total_population_5&drilldowns=State,Year&measures=Population&limit=1000,0";
+        const objResponse = await fetch(strApiUrl);
+
+        if (!objResponse.ok) {
+          throw new Error("Population data could not load right now.");
+        }
+
+        const objResult = await objResponse.json();
+
+        if (!objResult.data || objResult.data.length === 0) {
+          throw new Error("No population data was found.");
+        }
+
+        return fnBuildStateMap(objResult.data);
+      }
+
+      async function fnEnsurePopulationData() {
+        if (blnHasLoadedApiData) {
+          return;
+        }
+
+        objAllStateData = await fnFetchPopulationData();
+        blnHasLoadedApiData = true;
+      }
+
+      function fnUpdateSelectedStateData(arrSelectedStates) {
+        objSelectedStateData = {};
+
+        arrSelectedStates.forEach((objState) => {
+          if (objAllStateData[objState.strId]) {
+            objSelectedStateData[objState.strId] = objAllStateData[objState.strId];
+          }
+        });
+      }
+
+      function fnUpdateYearSlider() {
+        const numCurrentYear = Number(elYearSlider.value);
+        const arrYears = Object.values(objSelectedStateData)
+          .flatMap((objState) => objState.arrRows.map((objRow) => objRow.Year));
+
+        arrAvailableYears = [...new Set(arrYears)].sort((numA, numB) => numA - numB);
+
+        if (arrAvailableYears.length === 0) {
+          elYearSlider.disabled = true;
+          elYearOutput.textContent = "No data";
+          return;
+        }
+
+        elYearSlider.min = String(arrAvailableYears[0]);
+        elYearSlider.max = String(arrAvailableYears[arrAvailableYears.length - 1]);
+        elYearSlider.value = arrAvailableYears.includes(numCurrentYear)
+          ? String(numCurrentYear)
+          : String(arrAvailableYears[arrAvailableYears.length - 1]);
+        elYearSlider.disabled = false;
+        elYearOutput.textContent = elYearSlider.value;
+      }
+
+      function fnGetDatasetColor(numIndex) {
+        return arrColors[numIndex % arrColors.length];
+      }
+
+      function fnGetStateColor(strStateId) {
+        const numStateIndex = Object.keys(objSelectedStateData).indexOf(strStateId);
+        return fnGetDatasetColor(Math.max(numStateIndex, 0));
+      }
+
+      function fnBuildChartDatasets(numSelectedYear) {
+        const arrVisibleYears = arrAvailableYears.filter((numYear) => numYear <= numSelectedYear);
+        const arrStatesToRender = strFocusedStateId && objSelectedStateData[strFocusedStateId]
+          ? [objSelectedStateData[strFocusedStateId]]
+          : Object.values(objSelectedStateData);
+
+        return arrStatesToRender.map((objState) => {
+          const strColor = fnGetStateColor(objState.strId);
+
+          return {
+            label: objState.strName,
+            data: arrVisibleYears.map((numYear) => fnGetChartValue(objState, numYear)),
+            borderColor: strColor,
+            backgroundColor: strColor,
+            // Thicker lines and white points make the chart easier to read.
+            borderWidth: 3,
+            pointBackgroundColor: "#ffffff",
+            pointBorderColor: strColor,
+            pointBorderWidth: arrVisibleYears.map((numYear) => numYear === numSelectedYear ? 3 : 2),
+            pointRadius: arrVisibleYears.map((numYear) => numYear === numSelectedYear ? 6 : 2.5),
+            pointHoverRadius: 8,
+            pointHitRadius: 12,
+            tension: 0.25
+          };
+        });
+      }
+
+      function fnGetYAxisConfig() {
+        let strAxisTitle = "Population";
+
+        if (strChartView === "change") {
+          strAxisTitle = "Change since first year";
+        }
+
+        if (strChartView === "percent") {
+          strAxisTitle = "Percent change";
+        }
+
+        return {
+          title: {
+            display: true,
+            text: strAxisTitle
+          },
+          beginAtZero: strChartView !== "change",
+          grace: "8%",
+          grid: {
+            color: "rgba(36, 52, 71, 0.08)",
+            drawBorder: false
+          },
+          ticks: {
+            color: "#526173",
+            padding: 8,
+            callback: (numValue) => {
+              if (strChartView === "percent") {
+                return `${numValue}%`;
+              }
+
+              if (strChartView === "change") {
+                return `${numValue >= 0 ? "+" : ""}${fnFormatPopulationShort(numValue)}`;
+              }
+
+              return fnFormatPopulationShort(numValue);
+            }
+          }
+        };
+      }
+
+      function fnUpdateChartSummary() {
+        const numSelectedYear = Number(elYearSlider.value);
+        const arrStatesToSummarize = strFocusedStateId && objSelectedStateData[strFocusedStateId]
+          ? [objSelectedStateData[strFocusedStateId]]
+          : Object.values(objSelectedStateData);
+        const arrSummaryParts = arrStatesToSummarize.map((objState) => {
+          const numPopulation = fnFindPopulationForYear(objState.arrRows, numSelectedYear);
+          return `${objState.strName}: ${numPopulation ? fnFormatPopulation(numPopulation) : "No data"}`;
+        });
+
+        if (arrSummaryParts.length === 0) {
+          elChartSummary.textContent = "Choose states to see a chart summary here.";
+          elChartDescription.textContent = "A line chart compares the population of selected U.S. states over several years.";
+          return;
+        }
+
+        const strFocusText = strFocusedStateId && objSelectedStateData[strFocusedStateId]
+          ? ` Focus mode is on for ${objSelectedStateData[strFocusedStateId].strName}.`
+          : "";
+        const strSummary = `For ${numSelectedYear}, ${arrSummaryParts.join(". ")}.${strFocusText}`;
+        elChartSummary.textContent = strSummary;
+        elChartDescription.textContent = `A line chart compares selected U.S. state populations over time. ${strSummary}`;
+      }
+
+      function fnToggleFocusedState(strStateId) {
+        strFocusedStateId = strFocusedStateId === strStateId ? "" : strStateId;
+        fnRenderChart();
+        fnRenderSummaryCards();
+      }
+
+      function fnUpdateViewSize() {
+        elChartWrap.classList.remove("chart-small", "chart-large");
+
+        if (strViewSize === "small") {
+          elChartWrap.classList.add("chart-small");
+        }
+
+        if (strViewSize === "large") {
+          elChartWrap.classList.add("chart-large");
+        }
+
+        if (chartPopulation) {
+          chartPopulation.resize();
+        }
+      }
+
+      function fnRenderChart() {
+        const numSelectedYear = Number(elYearSlider.value);
+        const arrVisibleYears = arrAvailableYears.filter((numYear) => numYear <= numSelectedYear);
+        const objChartData = {
+          labels: arrVisibleYears,
+          datasets: fnBuildChartDatasets(numSelectedYear)
+        };
+
+        if (chartPopulation) {
+          chartPopulation.data = objChartData;
+          chartPopulation.options.scales.y = fnGetYAxisConfig();
+          chartPopulation.options.scales.x.title.text = `Year (through ${numSelectedYear})`;
+          chartPopulation.update();
+          return;
+        }
+
+        chartPopulation = new Chart(elChartCanvas, {
+          type: "line",
+          data: objChartData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              intersect: false,
+              mode: "nearest"
+            },
+            layout: {
+              padding: {
+                top: 12,
+                right: 18,
+                bottom: 8,
+                left: 8
+              }
+            },
+            plugins: {
+              // Put the legend below the chart so students can match each line to a state.
+              legend: {
+                position: "bottom",
+                align: "center",
+                labels: {
+                  boxHeight: 4,
+                  boxWidth: 28,
+                  color: "#243447",
+                  font: {
+                    size: 13,
+                    weight: "600"
+                  },
+                  padding: 18,
+                  usePointStyle: true,
+                  pointStyle: "line"
+                },
+                onClick: (objEvent, objLegendItem) => {
+                  const strClickedLabel = objLegendItem.text;
+                  const objMatchedState = Object.values(objSelectedStateData).find((objState) => objState.strName === strClickedLabel);
+
+                  if (objMatchedState) {
+                    fnToggleFocusedState(objMatchedState.strId);
+                  }
+                }
+              },
+              tooltip: {
+                backgroundColor: "#243447",
+                borderColor: "#f9c74f",
+                borderWidth: 1,
+                displayColors: true,
+                padding: 12,
+                titleFont: {
+                  size: 14,
+                  weight: "700"
+                },
+                bodyFont: {
+                  size: 13
+                },
+                callbacks: {
+                  title: (arrItems) => `Year: ${arrItems[0].label}`,
+                  label: (objContext) => `${objContext.dataset.label}: ${fnFormatChartValue(objContext.parsed.y)}`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: {
+                  color: "rgba(36, 52, 71, 0.06)",
+                  drawBorder: false
+                },
+                ticks: {
+                  color: "#526173",
+                  maxRotation: 0,
+                  padding: 8
+                },
+                title: {
+                  display: true,
+                  text: `Year (through ${numSelectedYear})`,
+                  color: "#243447",
+                  font: {
+                    size: 13,
+                    weight: "700"
+                  }
+                }
+              },
+              y: fnGetYAxisConfig()
+            }
+          }
+        });
+      }
+
+      function fnRenderSummaryCards() {
+        const numSelectedYear = Number(elYearSlider.value);
+        elYearOutput.textContent = String(numSelectedYear);
+        elSummaryCards.innerHTML = "";
+
+        Object.values(objSelectedStateData).forEach((objState) => {
+          const numPopulation = fnFindPopulationForYear(objState.arrRows, numSelectedYear);
+          const strPopulation = numPopulation ? fnFormatPopulation(numPopulation) : "No data";
+          const strColor = fnGetStateColor(objState.strId);
+          const strActiveClass = strFocusedStateId === objState.strId ? " snapshot-card-active" : "";
+          let strColumnClass = "col-md-6 col-xl-4";
+          let strCardSizeClass = "";
+
+          if (strViewSize === "small") {
+            strColumnClass = "col-sm-6 col-lg-4 col-xl-3";
+          }
+
+          if (strViewSize === "large") {
+            strColumnClass = "col-12 col-lg-6";
+            strCardSizeClass = " snapshot-card-large";
+          }
+
+          const elCol = document.createElement("div");
+          elCol.className = strColumnClass;
+          elCol.innerHTML = `
+            <article class="card h-100 snapshot-card${strCardSizeClass}${strActiveClass}" style="border-left-color: ${strColor};" data-state-id="${objState.strId}" tabindex="0" role="button" aria-pressed="${strFocusedStateId === objState.strId}">
+              <div class="card-body">
+                <h3 class="h5 card-title">${objState.strName}</h3>
+                <p class="card-text mb-1">Population in ${numSelectedYear}</p>
+                <p class="fw-bold population-number mb-0">${strPopulation}</p>
+              </div>
+            </article>
+          `;
+
+          elSummaryCards.appendChild(elCol);
+        });
+
+        elSummaryCards.querySelectorAll("[data-state-id]").forEach((elCard) => {
+          elCard.addEventListener("click", () => {
+            fnToggleFocusedState(elCard.dataset.stateId);
+          });
+
+          elCard.addEventListener("keydown", (objEvent) => {
+            if (objEvent.key === "Enter" || objEvent.key === " ") {
+              objEvent.preventDefault();
+              fnToggleFocusedState(elCard.dataset.stateId);
+            }
+          });
+        });
+
+        fnUpdateChartSummary();
+      }
+
+      async function fnLoadSelectedStates() {
+        const arrSelectedStates = fnGetSelectedStates();
+
+        if (arrSelectedStates.length === 0) {
+          fnSetStatus("Please choose at least one state.", "warning");
+          fnClearChart();
+          objSelectedStateData = {};
+          strFocusedStateId = "";
+          elSummaryCards.innerHTML = `<div class="col-12"><div class="alert alert-secondary mb-0">Pick states to see their populations here.</div></div>`;
+          fnUpdateChartSummary();
+          return;
+        }
+
+        fnSetStatus("Loading population data...", "info");
+        elUpdateButton.disabled = true;
+        elYearSlider.disabled = true;
+
+        try {
+          await fnEnsurePopulationData();
+          fnUpdateSelectedStateData(arrSelectedStates);
+
+          if (strFocusedStateId && !objSelectedStateData[strFocusedStateId]) {
+            strFocusedStateId = "";
+          }
+
+          fnUpdateYearSlider();
+          fnRenderChart();
+          fnRenderSummaryCards();
+          fnSetStatus("Great! The chart is ready. Move the slider to explore each year.", "success");
+        } catch (error) {
+          fnSetStatus(error.message || "Something went wrong while loading the data. Please try again.", "danger");
+          fnClearChart();
+          objSelectedStateData = {};
+          strFocusedStateId = "";
+          elSummaryCards.innerHTML = `<div class="col-12"><div class="alert alert-danger mb-0">Data could not be shown right now.</div></div>`;
+          fnUpdateChartSummary();
+        } finally {
+          elUpdateButton.disabled = false;
+        }
+      }
+
+      elPopulationForm.addEventListener("submit", (objEvent) => {
+        objEvent.preventDefault();
+        fnLoadSelectedStates();
+      });
+
+      elStateGrid.addEventListener("change", () => {
+        fnUpdateStateCount();
+      });
+
+      document.querySelectorAll("[data-group]").forEach((elButton) => {
+        elButton.addEventListener("click", () => {
+          fnHandleQuickPick(elButton.dataset.group);
+        });
+      });
+
+      elChartView.addEventListener("change", () => {
+        strChartView = elChartView.value;
+        fnRenderChart();
+        fnUpdateChartSummary();
+      });
+
+      elYearSlider.addEventListener("input", () => {
+        fnRenderChart();
+        fnRenderSummaryCards();
+      });
+
+      elViewSize.addEventListener("change", () => {
+        strViewSize = elViewSize.value;
+        fnUpdateViewSize();
+        fnRenderSummaryCards();
+      });
+
+      fnFillStateGrid();
+      fnUpdateViewSize();
+      fnLoadSelectedStates();
+    </script>
   </body>
 </html>

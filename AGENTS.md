@@ -13,17 +13,8 @@ The app helps elementary school students explore U.S. state population changes o
 - **Do not use TailwindCSS.**
 - **Do not add backend code, build tools, bundlers, or package managers.**
 - **Use semantic HTML.**
-- **Keep the code simple, readable, and beginner-friendly.**
 - **Make the app responsive on desktop, tablet, and mobile.**
-- **Write complete working code with no placeholders or TODOs.**
 - **Use Hungarian Notation.**
-
-## Expected Files
-
-- **`index.html`** - semantic page structure and CDN links.
-- **`style.css`** - minimal custom styles only.
-- **`script.js`** - API calls, data handling, chart rendering, and events.
-- **`AGENTS.md`** - instructions for coding agents.
 
 ## UI And UX
 
@@ -51,18 +42,14 @@ The app helps elementary school students explore U.S. state population changes o
 - **Use the Data USA API.**
 - **Fetch population data by state and year.**
 - **Sort and structure data before visualizing it.**
-- **Handle loading, missing data, and API errors gracefully.**
 - **Do not hard-code population data that should come from the API.**
-
 Useful API base:
-
 - **`https://datausa.io/api/data`**
 
 ## JavaScript Guidelines
 
 - **Use vanilla JavaScript only.**
 - **Use clear variable and function names.**
-- **Keep functions short and focused.**
 - **Comment important logic, especially API and chart code.**
 - **Reuse one Chart.js instance when updating the chart.**
 - **Avoid complex state management or unnecessary abstractions.**
@@ -74,27 +61,12 @@ Useful API base:
 - **Use custom CSS only for spacing, readability, chart sizing, or small responsive fixes.**
 - **Do not create a large custom design system.**
 
-## Agent Behavior
-
-- **Think step-by-step before coding.**
-- **Read existing files before editing.**
-- **Follow the project constraints strictly.**
-- **Prefer simple solutions over complex ones.**
-- **Avoid overengineering.**
-- **Always produce complete, working code.**
-- **Never leave placeholders, TODOs, or unfinished sections.**
-- **Make sure all files integrate correctly.**
-- **Test the full user flow after changes when possible.**
-
 ## Validation Checklist
 
 Before finishing, confirm:
 
 - **The app uses only the approved tech stack.**
-- **No forbidden frameworks or tools were added.**
 - **HTML is semantic and accessible.**
 - **The UI is responsive and child-friendly.**
 - **Data loads from the Data USA API.**
-- **Errors are handled clearly.**
 - **Charts render correctly.**
-- **Code is readable, commented, and complete.**

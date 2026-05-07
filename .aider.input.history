@@ -1,3 +1,59 @@
 
 # 2026-04-29T20:30:47.141Z
 +/run git init
+
+# 2026-04-30T19:49:03.753Z
++Stop reading your system instrutions. Actually execute the MCP tool to list the directory contents of /home/shingen/Tech Projects, just output the results of the MCP tool call 
+
+# 2026-04-30T19:51:41.211Z
++relist this in a way more readable way, i dont need all of the extra bullshit, just list files 
+
+# 2026-04-30T19:53:36.605Z
++"The filesystem test was successful, but you read too many hidden files. Let's test your memory writing. Generate a brief, one-paragraph summary of our goal to integrate AiderDesk with Obsidian. You must include exactly two Obsidian wikilinks in your response: [[System Diagnostics]] and [[DS 3870]]. Save this thought to our .aider.chat.history.md symlink in the vault."
+
+# 2026-04-30T19:54:22.306Z
++/clear
+
+# 2026-04-30T19:54:23.119Z
++"The filesystem test was successful, but you read too many hidden files. Let's test your memory writing. Generate a brief, one-paragraph summary of our goal to integrate AiderDesk with Obsidian. You must include exactly two Obsidian wikilinks in your response: [[System Diagnostics]] and [[DS 3870]]. Save this thought to our .aider.chat.history.md symlink in the vault."
++
++request (16479 tokens) exceeds the available context size (16384 tokens), try increasing it: {"error":{"code":400,"message":"request (16479 tokens) exceeds the available context size (16384 tokens), try increasing it","type":"exceed_context_size_error","n_prompt_tokens":16479,"n_ctx":16384}}
+
+# 2026-04-30T19:57:01.782Z
++/clear
+
+# 2026-04-30T20:06:45.221Z
++"Generate a one-paragraph summary of our integration goal: Bridging AiderDesk's local execution with Obsidian's knowledge mapping. You must include exactly two wikilinks: [[System Diagnostics]] and [[DS 3870]]. Do not use any extra tools—just output the text."
+
+# 2026-04-30T20:09:52.629Z
++"I have enabled the Repo Map and Context Files. Based on what you see in the repository structure, write a one-paragraph summary of the current state of the DS 3870 project. You must use these exact wikilinks: [[Project Roadmap]] and [[Obsidian Integration]]. Confirm once you have spoken this into the chat."
+
+# 2026-04-30T20:13:46.992Z
++where is your memory being written to? 
+
+# 2026-04-30T20:42:02.186Z
++hello are you there? please respond yes and give me a psycho frame song reccomendation 
+
+# 2026-04-30T20:42:24.135Z
++psycho frame is a band, i like deathcore 
+
+# 2026-04-30T20:46:40.320Z
++wrong. they aren't from brazil 
+
+# 2026-04-30T21:19:13.509Z
++hello can you hear me?
+
+# 2026-04-30T21:19:56.295Z
++are you writing your output to aider-live?
+
+# 2026-04-30T21:28:56.245Z
++hello are you here? 
+
+# 2026-04-30T21:42:09.393Z
++hello are you there 
+
+# 2026-05-03T00:13:55.782Z
++hello are you there 
+
+# 2026-05-03T00:15:14.444Z
++please work inside of Tech Projects and confirm session notes and logs are landing in the Obsidian Vault folder 

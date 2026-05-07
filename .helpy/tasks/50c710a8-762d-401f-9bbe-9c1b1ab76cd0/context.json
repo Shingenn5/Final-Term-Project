@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "contextMessages": [
+    {
+      "id": "226370ad-21a3-4935-883b-86725970e474",
+      "role": "user",
+      "content": "hello are you there",
+      "promptContext": {
+        "id": "226370ad-21a3-4935-883b-86725970e474"
+      }
+    }
+  ],
+  "contextFiles": []
+}

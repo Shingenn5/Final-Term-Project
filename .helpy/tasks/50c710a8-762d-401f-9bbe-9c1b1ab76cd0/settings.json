@@ -1,0 +1,22 @@
+{
+  "id": "50c710a8-762d-401f-9bbe-9c1b1ab76cd0",
+  "baseDir": "/home/shingen/Tech Projects/DS 3870/Final Term Project",
+  "name": "hello are you there",
+  "archived": false,
+  "aiderTotalCost": 0,
+  "agentTotalCost": 0,
+  "mainModel": "",
+  "currentMode": "agent",
+  "contextCompactingThreshold": 0,
+  "weakModelLocked": false,
+  "parentId": null,
+  "agentProfileId": "aider",
+  "provider": "openai-compatible",
+  "model": "Qwen3.6-35B-A3B-UD-IQ2_M.gguf",
+  "workingMode": "local",
+  "updatedAt": "2026-05-02T18:32:16.848Z",
+  "startedAt": "2026-05-02T18:32:22.244Z",
+  "state": "READY_FOR_REVIEW",
+  "createdAt": "2026-05-02T18:32:22.244Z",
+  "completedAt": "2026-05-02T18:32:16.848Z"
+}
