@@ -62,7 +62,10 @@
       }
 
       #population-chart {
-        max-height: 420px;
+        height: 100% !important;
+        max-height: none;
+        min-height: inherit;
+        width: 100% !important;
       }
 
       .snapshot-card {
@@ -98,6 +101,27 @@
 
       .chart-large {
         min-height: 500px;
+      }
+
+      .layout-chart-wide .state-grid {
+        max-height: 220px;
+      }
+
+      .layout-chart-wide .chart-wrap {
+        min-height: 520px;
+      }
+
+      .layout-chart-full .quick-pick-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .layout-chart-full .state-grid {
+        grid-template-columns: 1fr;
+        max-height: 170px;
+      }
+
+      .layout-chart-full .chart-wrap {
+        min-height: 620px;
       }
 
       .snapshot-card-large .population-number {
@@ -290,7 +314,7 @@
       </section>
 
       <section class="row g-4 align-items-stretch" aria-labelledby="controls-heading">
-        <div class="col-lg-4">
+        <div class="col-lg-4" id="control-column">
           <form class="h-100 p-3 p-md-4 bg-light border rounded control-panel" id="population-form">
             <p class="section-kicker mb-1">Explore</p>
             <h2 class="h4 mb-3" id="controls-heading">Make Your Chart</h2>
@@ -333,7 +357,7 @@
           </form>
         </div>
 
-        <div class="col-lg-8">
+        <div class="col-lg-8" id="chart-column">
           <section class="h-100 p-3 p-md-4 border rounded bg-white chart-section" aria-labelledby="chart-heading">
             <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
               <div>
@@ -364,6 +388,15 @@
                   <option value="large">Larger</option>
                 </select>
                 <div class="form-text" id="view-help">Make the chart easier to see.</div>
+              </div>
+              <div>
+                <label class="form-label fw-semibold mb-2" for="layout-size">Page layout</label>
+                <select class="form-select kid-select" id="layout-size" aria-describedby="layout-help">
+                  <option value="balanced">Balanced</option>
+                  <option value="wide">More chart room</option>
+                  <option value="full">Biggest chart</option>
+                </select>
+                <div class="form-text" id="layout-help">Give the graph more space and shrink the state list.</div>
               </div>
             </div>
 
@@ -507,7 +540,11 @@
       const elChartDescription = document.querySelector("#chart-description");
       const elChartView = document.querySelector("#chart-view");
       const elViewSize = document.querySelector("#view-size");
+      const elLayoutSize = document.querySelector("#layout-size");
       const elChartWrap = document.querySelector(".chart-wrap");
+      const elControlColumn = document.querySelector("#control-column");
+      const elChartColumn = document.querySelector("#chart-column");
+      const elExplorerLayout = document.querySelector("[aria-labelledby='controls-heading']");
 
       let chartPopulation = null;
       let objAllStateData = {};
@@ -516,6 +553,7 @@
       let blnHasLoadedApiData = false;
       let strChartView = "percent";
       let strViewSize = "normal";
+      let strLayoutSize = "balanced";
       let strFocusedStateId = "";
 
       function fnFillStateGrid() {
@@ -888,6 +926,28 @@
         }
       }
 
+      function fnUpdateLayoutSize() {
+        elExplorerLayout.classList.remove("layout-chart-wide", "layout-chart-full");
+        elControlColumn.className = "col-lg-4";
+        elChartColumn.className = "col-lg-8";
+
+        if (strLayoutSize === "wide") {
+          elExplorerLayout.classList.add("layout-chart-wide");
+          elControlColumn.className = "col-lg-3";
+          elChartColumn.className = "col-lg-9";
+        }
+
+        if (strLayoutSize === "full") {
+          elExplorerLayout.classList.add("layout-chart-full");
+          elControlColumn.className = "col-lg-2";
+          elChartColumn.className = "col-lg-10";
+        }
+
+        if (chartPopulation) {
+          chartPopulation.resize();
+        }
+      }
+
       function fnRenderChart() {
         const numSelectedYear = Number(elYearSlider.value);
         const arrVisibleYears = arrAvailableYears.filter((numYear) => numYear <= numSelectedYear);
@@ -1120,7 +1180,13 @@
         fnRenderSummaryCards();
       });
 
+      elLayoutSize.addEventListener("change", () => {
+        strLayoutSize = elLayoutSize.value;
+        fnUpdateLayoutSize();
+      });
+
       fnFillStateGrid();
+      fnUpdateLayoutSize();
       fnUpdateViewSize();
       fnLoadSelectedStates();
     </script>
