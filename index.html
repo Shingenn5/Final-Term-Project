@@ -360,7 +360,7 @@
           <div class="col-md-4">
             <div class="info-card h-100 p-3">
               <p class="section-kicker mb-1">Step 3</p>
-              <p class="mb-0 fw-semibold">Press the green button.</p>
+              <p class="mb-0 fw-semibold">Watch the chart update.</p>
             </div>
           </div>
         </div>
@@ -389,7 +389,7 @@
               </div>
               <div class="state-grid" id="state-grid" aria-describedby="state-help"></div>
               <div class="form-text" id="state-help">
-                Quick buttons choose many states at once. The boxes let you make changes.
+                Quick buttons choose many states at once. The chart updates when you change a box.
               </div>
             </fieldset>
 
@@ -406,7 +406,7 @@
               <div class="form-text" id="year-help">The chart stops at the year you choose.</div>
             </div>
 
-            <button class="btn btn-success btn-lg w-100" id="update-button" type="submit"><span class="step-number">3</span>Show My Chart</button>
+            <button class="btn btn-success btn-lg w-100" id="update-button" type="submit"><span class="step-number">3</span>Refresh Chart</button>
           </form>
         </div>
 
@@ -449,7 +449,7 @@
             </div>
 
             <div class="alert alert-info mb-3" id="status-message" role="status" aria-live="polite">
-              Pick states and press Show My Chart.
+              Pick states and the chart will update automatically.
             </div>
 
             <div class="chart-wrap">
@@ -1209,7 +1209,7 @@
           fnUpdateYearSlider();
           fnRenderChart();
           fnRenderSummaryCards();
-          fnSetStatus("Great! The chart is ready. Move the slider to explore each year.", "success");
+          fnSetStatus("Great! The chart is ready. Change states or move the slider to explore.", "success");
         } catch (error) {
           fnSetStatus(error.message || "Something went wrong while loading the data. Please try again.", "danger");
           fnClearChart();
@@ -1229,11 +1229,13 @@
 
       elStateGrid.addEventListener("change", () => {
         fnUpdateStateCount();
+        fnLoadSelectedStates();
       });
 
       document.querySelectorAll("[data-group]").forEach((elButton) => {
         elButton.addEventListener("click", () => {
           fnHandleQuickPick(elButton.dataset.group);
+          fnLoadSelectedStates();
         });
       });
 
