@@ -103,27 +103,6 @@
         min-height: 500px;
       }
 
-      .layout-chart-wide .state-grid {
-        max-height: 220px;
-      }
-
-      .layout-chart-wide .chart-wrap {
-        min-height: 520px;
-      }
-
-      .layout-chart-full .quick-pick-buttons {
-        grid-template-columns: 1fr;
-      }
-
-      .layout-chart-full .state-grid {
-        grid-template-columns: 1fr;
-        max-height: 170px;
-      }
-
-      .layout-chart-full .chart-wrap {
-        min-height: 620px;
-      }
-
       .snapshot-card-large .population-number {
         font-size: 1.85rem;
       }
@@ -195,6 +174,54 @@
         justify-content: center;
         margin-right: 0.35rem;
         width: 1.8rem;
+      }
+
+      .resizable-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .layout-resizer {
+        align-items: center;
+        background: transparent;
+        border: 0;
+        color: #157a6e;
+        display: none;
+        justify-content: center;
+        padding: 0;
+      }
+
+      .layout-resizer:focus-visible {
+        outline: 3px solid rgba(13, 110, 253, 0.45);
+        outline-offset: 0.25rem;
+      }
+
+      .resizer-grip {
+        align-items: center;
+        background: #e9f7f1;
+        border: 1px solid #b6e2cf;
+        border-radius: 999px;
+        display: inline-flex;
+        height: 100%;
+        justify-content: center;
+        min-height: 4rem;
+        width: 0.75rem;
+      }
+
+      .resizer-grip::before {
+        background: currentColor;
+        border-radius: 999px;
+        box-shadow: 0 0.45rem 0 currentColor, 0 -0.45rem 0 currentColor;
+        content: "";
+        display: block;
+        height: 0.35rem;
+        width: 0.35rem;
+      }
+
+      body.is-resizing-layout {
+        cursor: col-resize;
+        user-select: none;
       }
 
       #year-slider {
@@ -278,6 +305,32 @@
           padding-top: 2rem !important;
         }
       }
+
+      @media (min-width: 992px) {
+        .resizable-layout {
+          --control-panel-width: 33.333%;
+          align-items: stretch;
+          flex-direction: row;
+          gap: 0.75rem;
+        }
+
+        .layout-column-control {
+          flex: 0 0 var(--control-panel-width);
+          min-width: 15rem;
+        }
+
+        .layout-column-chart {
+          flex: 1 1 auto;
+          min-width: 0;
+        }
+
+        .layout-resizer {
+          cursor: col-resize;
+          display: flex;
+          flex: 0 0 1rem;
+          touch-action: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -313,8 +366,8 @@
         </div>
       </section>
 
-      <section class="row g-4 align-items-stretch" aria-labelledby="controls-heading">
-        <div class="col-lg-4" id="control-column">
+      <section class="resizable-layout" id="explorer-layout" aria-labelledby="controls-heading">
+        <div class="layout-column-control" id="control-column">
           <form class="h-100 p-3 p-md-4 bg-light border rounded control-panel" id="population-form">
             <p class="section-kicker mb-1">Explore</p>
             <h2 class="h4 mb-3" id="controls-heading">Make Your Chart</h2>
@@ -357,7 +410,11 @@
           </form>
         </div>
 
-        <div class="col-lg-8" id="chart-column">
+        <button class="layout-resizer" id="layout-resizer" type="button" role="separator" aria-label="Resize controls and chart" aria-controls="control-column chart-column" aria-orientation="vertical" aria-valuemin="20" aria-valuemax="55" aria-valuenow="33">
+          <span class="resizer-grip" aria-hidden="true"></span>
+        </button>
+
+        <div class="layout-column-chart" id="chart-column">
           <section class="h-100 p-3 p-md-4 border rounded bg-white chart-section" aria-labelledby="chart-heading">
             <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
               <div>
@@ -389,15 +446,6 @@
                 </select>
                 <div class="form-text" id="view-help">Make the chart easier to see.</div>
               </div>
-              <div>
-                <label class="form-label fw-semibold mb-2" for="layout-size">Page layout</label>
-                <select class="form-select kid-select" id="layout-size" aria-describedby="layout-help">
-                  <option value="balanced">Balanced</option>
-                  <option value="wide">More chart room</option>
-                  <option value="full">Biggest chart</option>
-                </select>
-                <div class="form-text" id="layout-help">Give the graph more space and shrink the state list.</div>
-              </div>
             </div>
 
             <div class="alert alert-info mb-3" id="status-message" role="status" aria-live="polite">
@@ -413,7 +461,7 @@
             </p>
 
             <p class="small text-muted mb-0 mt-3" id="chart-summary" aria-live="polite">
-              Choose states to see a chart summary here.
+              Choose states to see a chart summary here. Drag the divider beside the chart to resize the controls and graph.
             </p>
           </section>
         </div>
@@ -540,11 +588,9 @@
       const elChartDescription = document.querySelector("#chart-description");
       const elChartView = document.querySelector("#chart-view");
       const elViewSize = document.querySelector("#view-size");
-      const elLayoutSize = document.querySelector("#layout-size");
       const elChartWrap = document.querySelector(".chart-wrap");
-      const elControlColumn = document.querySelector("#control-column");
-      const elChartColumn = document.querySelector("#chart-column");
-      const elExplorerLayout = document.querySelector("[aria-labelledby='controls-heading']");
+      const elExplorerLayout = document.querySelector("#explorer-layout");
+      const elLayoutResizer = document.querySelector("#layout-resizer");
 
       let chartPopulation = null;
       let objAllStateData = {};
@@ -553,8 +599,9 @@
       let blnHasLoadedApiData = false;
       let strChartView = "percent";
       let strViewSize = "normal";
-      let strLayoutSize = "balanced";
       let strFocusedStateId = "";
+      let blnIsResizingLayout = false;
+      let numControlPanelPercent = 33;
 
       function fnFillStateGrid() {
         arrStates.forEach((objState) => {
@@ -926,25 +973,52 @@
         }
       }
 
-      function fnUpdateLayoutSize() {
-        elExplorerLayout.classList.remove("layout-chart-wide", "layout-chart-full");
-        elControlColumn.className = "col-lg-4";
-        elChartColumn.className = "col-lg-8";
-
-        if (strLayoutSize === "wide") {
-          elExplorerLayout.classList.add("layout-chart-wide");
-          elControlColumn.className = "col-lg-3";
-          elChartColumn.className = "col-lg-9";
-        }
-
-        if (strLayoutSize === "full") {
-          elExplorerLayout.classList.add("layout-chart-full");
-          elControlColumn.className = "col-lg-2";
-          elChartColumn.className = "col-lg-10";
-        }
+      function fnSetControlPanelWidth(numPercent) {
+        numControlPanelPercent = Math.min(Math.max(numPercent, 20), 55);
+        elExplorerLayout.style.setProperty("--control-panel-width", `${numControlPanelPercent}%`);
+        elLayoutResizer.setAttribute("aria-valuenow", String(Math.round(numControlPanelPercent)));
 
         if (chartPopulation) {
           chartPopulation.resize();
+        }
+      }
+
+      function fnGetLayoutPercentFromPointer(objEvent) {
+        const objLayoutBounds = elExplorerLayout.getBoundingClientRect();
+        const numPointerOffset = objEvent.clientX - objLayoutBounds.left;
+
+        return (numPointerOffset / objLayoutBounds.width) * 100;
+      }
+
+      function fnStartLayoutResize(objEvent) {
+        if (window.innerWidth < 992) {
+          return;
+        }
+
+        blnIsResizingLayout = true;
+        document.body.classList.add("is-resizing-layout");
+        elLayoutResizer.setPointerCapture(objEvent.pointerId);
+        fnSetControlPanelWidth(fnGetLayoutPercentFromPointer(objEvent));
+      }
+
+      function fnResizeLayout(objEvent) {
+        if (!blnIsResizingLayout) {
+          return;
+        }
+
+        fnSetControlPanelWidth(fnGetLayoutPercentFromPointer(objEvent));
+      }
+
+      function fnStopLayoutResize(objEvent) {
+        if (!blnIsResizingLayout) {
+          return;
+        }
+
+        blnIsResizingLayout = false;
+        document.body.classList.remove("is-resizing-layout");
+
+        if (elLayoutResizer.hasPointerCapture(objEvent.pointerId)) {
+          elLayoutResizer.releasePointerCapture(objEvent.pointerId);
         }
       }
 
@@ -1180,13 +1254,24 @@
         fnRenderSummaryCards();
       });
 
-      elLayoutSize.addEventListener("change", () => {
-        strLayoutSize = elLayoutSize.value;
-        fnUpdateLayoutSize();
+      elLayoutResizer.addEventListener("pointerdown", fnStartLayoutResize);
+      elLayoutResizer.addEventListener("pointermove", fnResizeLayout);
+      elLayoutResizer.addEventListener("pointerup", fnStopLayoutResize);
+      elLayoutResizer.addEventListener("pointercancel", fnStopLayoutResize);
+      elLayoutResizer.addEventListener("keydown", (objEvent) => {
+        if (objEvent.key === "ArrowLeft") {
+          objEvent.preventDefault();
+          fnSetControlPanelWidth(numControlPanelPercent - 3);
+        }
+
+        if (objEvent.key === "ArrowRight") {
+          objEvent.preventDefault();
+          fnSetControlPanelWidth(numControlPanelPercent + 3);
+        }
       });
 
       fnFillStateGrid();
-      fnUpdateLayoutSize();
+      fnSetControlPanelWidth(numControlPanelPercent);
       fnUpdateViewSize();
       fnLoadSelectedStates();
     </script>
